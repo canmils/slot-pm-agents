@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Daily performance",
+  "type": "object",
+  "required": ["game_id", "date", "bets_eur", "ggr_eur"],
+  "properties": {
+    "game_id": {"type": "string"},
+    "date": {"type": "string", "format": "date"},
+    "bets_eur": {"type": "number", "minimum": 0},
+    "ggr_eur": {"type": "number", "description": "Bets minus wins. Can be negative on a single day"}
+  }
+}

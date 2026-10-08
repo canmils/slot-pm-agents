@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Milestone",
+  "type": "object",
+  "required": ["game_id", "milestone", "planned_date", "actual_date"],
+  "properties": {
+    "game_id": {"type": "string"},
+    "milestone": {"enum": ["kick_off", "initial_prototype", "client_prototype", "alpha", "beta", "gold", "master", "certification", "production", "activation"]},
+    "planned_date": {"type": "string", "format": "date"},
+    "actual_date": {"type": ["string", "null"], "format": "date"},
+    "slip_reason": {"type": ["string", "null"], "description": "Short reason when actual is later than planned, for example scope_change, art_revisions, vendor_capacity, cert_findings, math_changes"}
+  }
+}

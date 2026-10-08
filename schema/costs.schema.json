@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cost line",
+  "type": "object",
+  "required": ["game_id", "discipline", "budget_eur", "actual_eur"],
+  "properties": {
+    "game_id": {"type": "string"},
+    "discipline": {"enum": ["art", "animation", "front_end", "math", "audio", "qa", "certification", "translation", "production", "tools"]},
+    "budget_eur": {"type": "number", "minimum": 0},
+    "actual_eur": {"type": "number", "minimum": 0}
+  }
+}

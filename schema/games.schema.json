@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Game",
+  "type": "object",
+  "required": ["game_id", "title", "type", "family", "vendor", "launch_date", "exclusive", "seasonal", "volatility", "rtp_theoretical"],
+  "properties": {
+    "game_id": {"type": "string", "description": "Unique id, for example G001"},
+    "title": {"type": "string"},
+    "type": {"enum": ["original", "reskin"]},
+    "base_game_id": {"type": ["string", "null"], "description": "For a reskin, the game it is based on"},
+    "family": {"type": "string", "description": "Series or brand the game belongs to"},
+    "theme": {"type": "string"},
+    "mechanic": {"type": "string", "description": "Main mechanic, for example hold_and_win, cluster, ways, lines"},
+    "volatility": {"enum": ["low", "medium", "high", "very_high"]},
+    "rtp_theoretical": {"type": "number", "minimum": 0.8, "maximum": 1.0},
+    "vendor": {"type": "string", "description": "Who produced the game. Use 'in_house' for internal teams"},
+    "launch_date": {"type": "string", "format": "date"},
+    "exclusive": {"type": "boolean", "description": "Launched with one operator first"},
+    "seasonal": {"type": "boolean", "description": "Christmas, Easter, Halloween and similar"}
+  }
+}

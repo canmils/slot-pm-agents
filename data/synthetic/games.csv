@@ -1,0 +1,31 @@
+game_id,title,type,base_game_id,family,theme,mechanic,volatility,rtp_theoretical,vendor,launch_date,exclusive,seasonal
+G001,Neon Bazaar Nights,original,,Neon Bazaar,retro,lines,low,0.96,in_house,2024-02-22,True,False
+G002,Lucky Lagoon Riches,original,,Lucky Lagoon,fishing,lines,medium,0.95,in_house,2024-03-04,True,False
+G003,Ember Fang Nights,original,,Ember Fang,dragons,hold_and_win,high,0.95,in_house,2024-03-14,False,False
+G004,Lucky Lagoon Bonanza,reskin,G002,Lucky Lagoon,fishing,lines,medium,0.96,Vendor North,2024-03-15,False,False
+G005,Moon Orchard Bonanza,original,,Moon Orchard,fantasy,cluster,medium,0.96,in_house,2024-03-26,False,False
+G006,Iron Crown Deluxe,original,,Iron Crown,medieval,ways,high,0.95,Vendor North,2024-03-29,True,False
+G007,Iron Crown Frenzy,reskin,G006,Iron Crown,medieval,ways,high,0.96,Vendor North,2024-04-12,True,False
+G008,Moon Orchard Frenzy,reskin,G005,Moon Orchard,fantasy,cluster,medium,0.96,Vendor South,2024-04-16,True,False
+G009,Neon Bazaar Bonanza,original,,Neon Bazaar,retro,lines,low,0.96,in_house,2024-04-20,False,False
+G010,Moon Orchard Quest Winter Edition,reskin,G005,Moon Orchard,fantasy,cluster,medium,0.94,Vendor South,2024-05-20,False,True
+G011,Neon Bazaar Deluxe,original,,Neon Bazaar,retro,lines,low,0.96,in_house,2024-06-17,False,False
+G012,Neon Bazaar Quest,reskin,G001,Neon Bazaar,retro,lines,low,0.96,Vendor North,2024-08-21,False,False
+G013,Lucky Lagoon Rush,reskin,G002,Lucky Lagoon,fishing,lines,medium,0.96,Vendor South,2024-08-30,False,False
+G014,Moon Orchard Gold,original,,Moon Orchard,fantasy,cluster,medium,0.95,Vendor South,2024-09-17,False,False
+G015,Iron Crown Gold,reskin,G006,Iron Crown,medieval,ways,high,0.95,Vendor North,2024-12-11,True,False
+G016,Lucky Lagoon Quest,reskin,G002,Lucky Lagoon,fishing,lines,medium,0.95,Vendor South,2025-01-23,False,False
+G017,Lucky Lagoon Frenzy,reskin,G002,Lucky Lagoon,fishing,lines,medium,0.96,Vendor North,2025-02-22,False,False
+G018,Thunder Hogs Nights,original,,Thunder Hogs,animals,hold_and_win,very_high,0.94,in_house,2025-03-18,False,False
+G019,Neon Bazaar Gold,reskin,G001,Neon Bazaar,retro,lines,low,0.96,Vendor North,2025-03-24,False,False
+G020,Moon Orchard Vault,original,,Moon Orchard,fantasy,cluster,medium,0.96,in_house,2025-04-03,False,False
+G021,Ember Fang Rush,original,,Ember Fang,dragons,hold_and_win,high,0.96,Vendor North,2025-06-17,False,False
+G022,Thunder Hogs Deluxe,reskin,G018,Thunder Hogs,animals,hold_and_win,very_high,0.96,Vendor South,2025-07-16,False,False
+G023,Ember Fang Quest,reskin,G003,Ember Fang,dragons,hold_and_win,high,0.96,Vendor North,2025-08-01,True,False
+G024,Neon Bazaar Rush,reskin,G001,Neon Bazaar,retro,lines,low,0.95,Vendor South,2025-08-16,True,False
+G025,Thunder Hogs Bonanza,reskin,G018,Thunder Hogs,animals,hold_and_win,very_high,0.94,Vendor South,2025-09-02,False,False
+G026,Lucky Lagoon Legends,reskin,G002,Lucky Lagoon,fishing,lines,medium,0.96,Vendor South,2025-10-21,False,False
+G027,Thunder Hogs Legends,reskin,G018,Thunder Hogs,animals,hold_and_win,very_high,0.96,Vendor North,2025-11-11,True,False
+G028,Moon Orchard Riches,reskin,G005,Moon Orchard,fantasy,cluster,medium,0.96,Vendor South,2026-05-04,False,False
+G029,Neon Bazaar Frenzy,reskin,G001,Neon Bazaar,retro,lines,low,0.96,Vendor South,2026-05-10,True,False
+G030,Ember Fang Legends,reskin,G003,Ember Fang,dragons,hold_and_win,high,0.96,Vendor North,2026-08-03,False,False
