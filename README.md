@@ -24,7 +24,11 @@ It gives you four things you can use with any framework:
 ## Quick start
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/canmils/slot-pm-agents.git
+cd slot-pm-agents
+python -m venv .venv
+# Activate: .\.venv\Scripts\Activate.ps1 (Windows) or source .venv/bin/activate
+python -m pip install -r requirements.txt
 python scripts/generate_synthetic_data.py      # optional: data is already in data/synthetic/
 python examples/portfolio_review/analyze.py    # writes examples/portfolio_review/report.md
 ```
@@ -73,3 +77,17 @@ Please do not contribute real commercial data.
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
+
+## Requirements and expected first result
+
+Python 3.11/3.12 and Git. No API key is needed for the deterministic example. Use the direct virtual-environment interpreter if activation is unavailable. The example writes `examples/portfolio_review/report.md` and `summary.json`; inspect them against the bundled fictional CSVs before connecting an AI framework. Real data belongs outside tracked sample files.
+
+## Update, troubleshoot and contribute
+
+Stop the app with Ctrl+C. Back up your own configuration, inputs and outputs first. Run `git status`; commit tracked edits on a branch before pulling. Then `git pull --ff-only` and reinstall dependencies with the same environment/package manager used above. Restart with the documented run command. Resolve divergent history instead of forcing away changes.
+
+Missing command: install the prerequisite and reopen the terminal. Missing module: use the same interpreter/package manager for install and run. Missing file: check the repository root and sample setup. Port busy: stop the earlier server. Provider failure: check key, credit, model access and connectivity; repeated calls can incur another charge.
+
+Report bugs or suggest changes at https://github.com/canmils/slot-pm-agents/issues. Include OS/runtime, commit, exact command, safe sample, sanitized error and expected/actual result. See [CONTRIBUTING.md](CONTRIBUTING.md) for fork → branch → test → pull request. Never share keys or private company data.
+
+See [ONBOARDING_CHECKS.md](ONBOARDING_CHECKS.md) for checks actually run and limits.
