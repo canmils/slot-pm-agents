@@ -10,7 +10,7 @@ Copy [`_TEMPLATE.md`](_TEMPLATE.md) to add a new one.
 | 1 Strategy | [Operator signal](operator-signal.md) | draft |
 | 2 Roadmap | [Release planner](release-planner.md) | draft |
 | 3 Business case | [Cost estimator](cost-estimator.md) | draft |
-| 3 Business case | [Comparables](comparables.md) | draft |
+| 3 Business case | [Comparables](comparables.md) | example available |
 | 4 Define | [Brief writer](brief-writer.md) | draft |
 | 4 Define | [Math spec drafter](math-spec-drafter.md) | draft |
 | 5 Build | [Cert pack assistant](cert-pack-assistant.md) | draft |

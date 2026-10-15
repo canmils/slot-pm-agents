@@ -17,3 +17,5 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python examples/portfolio_review/analyze.py --output-dir output/portfolio-review
       - run: python examples/portfolio_review/prepare_agent_input.py --summary output/portfolio-review/summary.json --output output/portfolio-review/agent-input.json
+      - run: python examples/comparables/find_comparables.py --output-dir output/comparables
+      - run: python examples/portfolio_review/check_agent_output.py --summary examples/portfolio_review/summary.json --draft examples/portfolio_review/agent_output.md

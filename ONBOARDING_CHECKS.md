@@ -15,6 +15,22 @@ Six offline unittest checks cover:
 The source example was regenerated after changing caveats and source labels. No OpenAI or other
 model provider was called. Message preparation is a local JSON handoff, not a tested model adapter.
 
+## 15 October 2026, second pass
+
+13 more offline tests (19 in total, all passing):
+
+- The committed agent draft (`agent_output.md`) passes the number check; invented figures such as
+  `950k` and `71%` are caught. Two weaknesses were found and fixed while writing these tests:
+  percentages matched unrelated values (for example a 0.714-week slip read as 71%), so percentages now
+  match only share-type fields.
+- `run_agent.py` with a mocked model: no key sends nothing, an existing output is not overwritten, a
+  clean draft is saved with a provenance line, a draft with an invented number returns exit code 2.
+- Comparables: the committed report matches a fresh run, the least important criterion is dropped
+  first, young games are never counted as zero, unknown criteria are rejected, output is not overwritten.
+
+`agent_output.md` was written by Claude Opus 5.5 from `prompt.md` and the committed `summary.json`.
+`run_agent.py` has not been run against the live OpenAI API.
+
 [GitHub Actions](https://github.com/canmils/slot-pm-agents/actions/workflows/onboarding.yml)
 runs the same tests and the analysis/handoff CLI on Ubuntu and Windows. Inspect the run for your
 commit; configuring a workflow alone is not evidence it passed.

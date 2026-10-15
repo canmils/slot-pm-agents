@@ -1,7 +1,8 @@
 # Worked example: portfolio review and agent handoff
 
-**Code computes. An optional model drafts. A person decides.** The repository includes the first
-part and a local handoff helper; it does not run a provider, schedule agents or send a report.
+**Code computes. An optional model drafts. Code checks the draft's numbers. A person decides.**
+Steps 1 to 4 are free. Only the optional `run_agent.py` calls a paid provider. Nothing schedules
+agents, sends a report or changes a roadmap.
 
 ## 1. Run the analysis
 
@@ -64,18 +65,40 @@ payload = prepare(summary)
 Use fictional data for initial trials. Private financial information must not be sent to a provider
 without permission. Treat model output as untrusted: it can invent facts despite instructions.
 
-## 4. Acceptance checks for the draft
+## 4. See what the agent writes, and check it
 
-- Numbers and game/group names must match `summary.json`; no model arithmetic or new forecasts.
+**Free:** [agent_output.md](agent_output.md) is a real agent draft. Claude Opus 5.5 wrote it on
+15 October 2026, following [prompt.md](prompt.md) with the committed `summary.json` as the only
+input. Nobody edited it afterwards.
+
+**Check any draft's numbers with code** (no key needed):
+
+```sh
+python examples/portfolio_review/check_agent_output.py --summary examples/portfolio_review/summary.json --draft examples/portfolio_review/agent_output.md
+```
+
+Every number in the draft must exist in `summary.json` (as written, in thousands like `909k`, or as
+a percentage). Anything else is listed and the script exits with code 1. It catches invented figures;
+it does not judge wording or reasoning. Limit: a small number such as `3.1` can match an unrelated
+value by chance, so a pass is strong evidence, not proof.
+
+**Optional, paid:** run the agent yourself with your own OpenAI key. One API call, and it asks first.
+
+```sh
+python -m pip install openai
+python examples/portfolio_review/run_agent.py --summary output/portfolio-review/summary.json --output output/portfolio-review/agent-draft.md
+```
+
+It saves the draft with a provenance line, then runs the number check automatically. Exit code 2
+means the model wrote numbers that are not in the data. Default model `gpt-4.1-mini`; set
+`OPENAI_MODEL` to change it. A ChatGPT subscription does not include API credits.
+
+Also check by hand:
+
 - Every comparison names its window and eligible count.
-- Young games remain unknown; small groups retain warnings.
-- No previous review was supplied: changes since last review are unknown.
-- Schedule comparisons are observations, not proof of vendor quality or causes of delay.
-- Output ends with decisions/questions for the Product Lead, not autonomous actions.
-
-A human-written reference opening could be: “The fictional portfolio contains 30 games at the
-2026-09-30 cutoff. One has not completed the 90-day window and is excluded from that comparison.”
-This illustrates acceptable caveating; it is not a tested model response.
+- Young games remain unknown; small groups keep their warnings.
+- Schedule comparisons are observations, not proof of vendor quality.
+- The draft ends with questions for the Product Lead, not actions.
 
 ## 5. Custom config/data and safe reruns
 
@@ -97,3 +120,14 @@ are documentation; the current loader performs targeted checks, not every possib
 Outputs refuse overwrite by default. Use a new folder for each review, or explicitly add
 `--overwrite` after preserving the previous one. The generator overwrites fictional source CSVs;
 never place private data in the synthetic directory.
+
+## 6. Troubleshooting
+
+| Problem | Action |
+| --- | --- |
+| Python/Git not found | Install the prerequisite and reopen the terminal |
+| Missing pandas or openai | Install with the same `.venv` interpreter that runs the script |
+| Output already exists | Choose a new `--output-dir`, or deliberately use `--overwrite` after backup |
+| Missing CSV/column | Check `data_dir`, file names and schema; do not substitute zeros |
+| Coverage or duplicate error | Repair upstream daily data; weekly data is not supported |
+| Main window/config error | Include 30 and the main window in `windows_days`; use a share in (0, 1] |

@@ -6,27 +6,33 @@ This is not an agent framework. There are many good ones already. This repo answ
 
 > What should an agent actually do in a slot studio, what data does it need, and where must a person decide?
 
-It gives you five things you can use with any framework:
+## See it before you install anything
+
+| What | Agent | Made by | Open |
+| --- | --- | --- | --- |
+| Portfolio report: 30 fictional games compared at the same age | Performance review | Code | [report.md](examples/portfolio_review/report.md) |
+| The agent's written review of that report | Performance review | Claude Opus 5.5, unedited | [agent_output.md](examples/portfolio_review/agent_output.md) |
+| Range of past results for a new game idea, with its own warnings | Comparables | Code | [comparables.md](examples/comparables/comparables.md) |
+
+The agent draft passes a code check: every number in it exists in the data. You can run the same check on any draft.
+
+## What is in the repo
 
 | Folder | What it is |
 |---|---|
 | [`docs/framework.md`](docs/framework.md) | The 7 layers of product management, adapted to slot games |
-| [`agents/`](agents/) | One card per agent: inputs, outputs, human decision point, limits |
+| [`agents/`](agents/) | One card per agent: inputs, outputs, human decision point, limits. 2 of 10 have a runnable example |
 | [`schema/`](schema/) | A data model for slot projects: games, milestones, costs, daily performance |
-| [`data/synthetic/`](data/synthetic/) | Fictional data that follows the schema, so you can test without real data |
-| [`examples/portfolio_review/`](examples/portfolio_review/) | One small example that runs end to end |
+| [`data/synthetic/`](data/synthetic/) | Fictional data that follows the schema |
+| [`examples/`](examples/) | [Portfolio review](examples/portfolio_review/) and [Comparables](examples/comparables/), end to end |
 
-## Who this is for
+**Who it is for:** developers who can build agents but do not know how a slot studio works, and producers or product people who want a clear map before they automate anything.
 
-- **Developers** who can build agents but do not know how a slot studio works.
-- **Producers and product people** in iGaming who want a clear map before they automate anything.
+## Run it: no model key needed
 
-## Install and run: no model key required
+Requires Git and Python 3.11 or 3.12.
 
-Requires Git, Python **3.11 or 3.12**, and internet for dependency installation.
-Run commands from the repository root. There is no web server or application UI.
-
-Windows PowerShell (activation is unnecessary):
+Windows PowerShell:
 
 ```powershell
 git clone https://github.com/canmils/slot-pm-agents.git
@@ -34,6 +40,7 @@ cd slot-pm-agents
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe examples/portfolio_review/analyze.py --output-dir output/portfolio-review
+.\.venv\Scripts\python.exe examples/comparables/find_comparables.py --output-dir output/comparables
 ```
 
 macOS/Linux:
@@ -44,18 +51,14 @@ cd slot-pm-agents
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python examples/portfolio_review/analyze.py --output-dir output/portfolio-review
+.venv/bin/python examples/comparables/find_comparables.py --output-dir output/comparables
 ```
 
-Expected: `output/portfolio-review/report.md` and `summary.json`, based on 30 fictional games,
-with data cutoff 2026-09-30. One game is too young for the 90-day comparison and remains unknown,
-not zero. Open the Markdown file in a text editor or preview it. The date is the fixture's cutoff,
-not today's date. Existing outputs are refused unless you explicitly add `--overwrite`.
-Use a new output folder to keep a previous review.
+You get the same reports as the committed ones, in `output/`. Then:
 
-The bundled CSVs are ready to use. `scripts/generate_synthetic_data.py` is optional and overwrites
-those fictional CSVs; do not run it over custom data. Generated reports are not model output.
-
-Next: follow the [worked example and agent handoff](examples/portfolio_review/README.md).
+- **Check an agent draft's numbers** (free) and **run the agent yourself** (optional, your own OpenAI key, one call): see [portfolio review step 4](examples/portfolio_review/README.md#4-see-what-the-agent-writes-and-check-it).
+- **Try your own game idea:** edit [`examples/comparables/option.json`](examples/comparables/option.json).
+- **Use your own data:** see [portfolio review step 5](examples/portfolio_review/README.md#5-custom-configdata-and-safe-reruns). Keep it in `data/private/`, which is git-ignored.
 
 ## The main idea
 
@@ -66,7 +69,7 @@ In a slot studio this matters more than in most software products, because:
 1. **Game math is regulated.** RTP, volatility and max win must be simulated and signed off by a math engineer. An agent can draft, never approve.
 2. **Builds are certified.** Labs (for example BMM, GLI, DGE) test a frozen build. "Agents ship code into players' hands" does not happen here.
 3. **Revenue of a new game is very hard to predict.** A few games make most of the money. An agent can show comparable games and ranges. It should not give a single number.
-4. **Cost and timeline can be measured.** Validate assumptions and data before drawing conclusions; time savings are not established by this example.
+4. **Cost and schedule are easier to measure than revenue.** That makes them the safest place to start, as long as the data is checked first.
 
 Read [`docs/limits.md`](docs/limits.md) before you build anything.
 
@@ -74,83 +77,41 @@ Read [`docs/limits.md`](docs/limits.md) before you build anything.
 
 Do not build all 7 layers. Start with the layers that are low risk and data heavy:
 
-1. **Measure** (layer 6): post-launch performance, normalised by days live. See the example.
-2. **Business case** (layer 3): cost and weeks per option, plus revenue *ranges* from comparable games.
-3. **Strategy** (layer 1): competitor release tracking from public sources.
+1. **Measure** (layer 6): post-launch performance at the same age. [Example](examples/portfolio_review/).
+2. **Business case** (layer 3): revenue ranges from comparable games, plus cost and weeks. [Example](examples/comparables/).
+3. **Strategy** (layer 1): competitor release tracking from public sources. Card only.
 
 Leave Define, Build and Run until the first three are trusted.
 
-## A note on the data
-
-All data in this repo is **fictional**. Game names, vendors, costs and revenue are generated by `scripts/generate_synthetic_data.py`. Any match with a real game or company is by chance.
-
-If you use this with real data, keep it out of the repo. `data/private/` is in `.gitignore` for that reason.
-
-## Contributing
-
-Useful contributions:
-
-- Corrections to the framework from people who work in studios, operators or labs.
-- New agent cards that follow the same template.
-- Examples built with other frameworks that use the same schema.
-
-Please do not contribute real commercial data.
-
-## License
-
-MIT. See [`LICENSE`](LICENSE).
-
 ## What runs, what does not
 
-| Part | Implemented behavior |
+| Part | What it does |
 | --- | --- |
-| `analyze.py` | Reads four CSVs, validates supported data assumptions and computes a deterministic report |
-| `prepare_agent_input.py` | Creates local `messages` JSON using the report facts and prompt; sends nothing |
-| Agent cards | Domain instructions/contracts, not running autonomous agents |
-| Provider, orchestration and delivery | Not bundled: you choose and implement these separately |
-| Approval | A human reviews the evidence and decides; nothing is published or sent automatically |
+| `analyze.py`, `find_comparables.py` | Deterministic reports from the CSVs. No model |
+| `check_agent_output.py` | Flags numbers in a draft that are not in the data. No model |
+| `prepare_agent_input.py` | Builds the model messages locally. Sends nothing |
+| `run_agent.py` | Optional. One OpenAI call with your key, then the number check |
+| Agent cards | Domain contracts, not running agents |
+| Approval | Always a person. Nothing is published, sent or scheduled |
 
-This is a domain library plus one executable analytical example, not a commercial portfolio
-platform. It does not establish revenue forecasts, certification readiness or measured time savings.
+It does not forecast revenue, certify anything or prove time savings.
 
-## Your own data and configuration
-
-Read [schema/README.md](schema/README.md) and the [example guide](examples/portfolio_review/README.md)
-before replacing fictional data. The example expects daily rows from each launch through one common
-cutoff, not weekly aggregates. It rejects missing/duplicate daily rows, pre-launch dates, unknown
-IDs and invalid required financial values instead of silently treating gaps as zero.
-This is targeted validation, not a complete JSON Schema validator or source audit.
-
-`data_dir` resolves relative to `examples/portfolio_review/`, **not your config file**. An absolute
-path is also accepted. The output folder resolves from the command's current working directory.
-Keep custom configs, data and reports in ignored `data/private/` / `output/` or outside this checkout.
-Set `data_label` accurately; it is a user-supplied label, not an automated provenance guarantee.
-
-## Verify, update and troubleshoot
-
-Use the same virtual-environment interpreter used above in place of `python`:
+## Tests
 
 ```sh
 python -m unittest discover -s tests -v
 ```
 
-Tests check the fictional result, an independent 90-day sum, exclusion of young games, missing/
-duplicate rows, unknown IDs, invalid windows, output protection and local agent-message preparation.
-[CI](https://github.com/canmils/slot-pm-agents/actions/workflows/onboarding.yml) runs on Ubuntu and Windows.
-See [ONBOARDING_CHECKS.md](ONBOARDING_CHECKS.md) for performed checks and limits.
+Offline, no key. [CI](https://github.com/canmils/slot-pm-agents/actions/workflows/onboarding.yml) runs them on Ubuntu and Windows. See [ONBOARDING_CHECKS.md](ONBOARDING_CHECKS.md) for what has been checked.
 
-Back up custom data/configs and outputs. Inspect `git status`, preserve tracked edits on a branch,
-run `git pull --ff-only`, then repeat the original pip installation command. No server needs stopping.
+## A note on the data
 
-| Problem | Action |
-| --- | --- |
-| Python/Git not found | Install prerequisite and reopen terminal |
-| Missing pandas | Install with the same `.venv` interpreter that runs the script |
-| Output already exists | Choose a new `--output-dir`, or deliberately use `--overwrite` after backup |
-| Missing CSV/column | Check `data_dir`, filenames and schema; do not substitute zeros |
-| Coverage or duplicate error | Repair upstream daily data; weekly data is unsupported by this example |
-| Main window/config error | Include 30 and the main window in `windows_days`; use a share in (0, 1] |
+All data in this repo is **fictional**, generated by `scripts/generate_synthetic_data.py`. Any match with a real game or company is by chance. Do not contribute real commercial data.
 
-Report [bugs or suggestions](https://github.com/canmils/slot-pm-agents/issues) with OS/Python version,
-commit, command, fictional sample and expected/actual result. Do not upload private commercial data.
-See [CONTRIBUTING.md](CONTRIBUTING.md) for fork → branch → checks → pull request.
+## Contributing
+
+Useful: corrections to the framework from people in studios, operators or labs; new agent cards that follow [the template](agents/_TEMPLATE.md); examples in other frameworks that use the same schema. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).
