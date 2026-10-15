@@ -22,6 +22,53 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 
 
+def validate_config(cfg: dict) -> None:
+    windows = cfg.get("windows_days", [])
+    if not windows or any(type(w) is not int or w <= 0 for w in windows):
+        raise ValueError("windows_days must contain positive integers.")
+    if 30 not in windows or cfg.get("main_window_days") not in windows:
+        raise ValueError("windows_days must include 30 and main_window_days.")
+    if not 0 < cfg.get("revenue_share", 0) <= 1:
+        raise ValueError("revenue_share must be greater than 0 and at most 1.")
+    if type(cfg.get("min_group_size")) is not int or cfg["min_group_size"] < 1:
+        raise ValueError("min_group_size must be a positive integer.")
+
+
+def validate_tables(t: dict) -> None:
+    games = t["games"]
+    if games.empty or games["game_id"].isna().any() or games["game_id"].duplicated().any():
+        raise ValueError("games must have non-empty, unique game_id values.")
+    ids = set(games["game_id"])
+    for name, keys in [("costs", ["game_id", "discipline"]), ("milestones", ["game_id", "milestone"]), ("daily_performance", ["game_id", "date"])]:
+        table = t[name]
+        if table.empty or table[keys].isna().any().any() or table.duplicated(keys).any():
+            raise ValueError(f"{name}: missing keys or duplicate rows.")
+        if not set(table["game_id"]).issubset(ids):
+            raise ValueError(f"{name}: unknown game_id.")
+    for name, columns in [("costs", ["budget_eur", "actual_eur"]), ("daily_performance", ["bets_eur", "ggr_eur"])]:
+        for column in columns:
+            series = pd.to_numeric(t[name][column], errors="raise")
+            if series.isna().any() or not series.map(lambda x: float("-inf") < x < float("inf")).all():
+                raise ValueError(f"{name}.{column}: finite numeric values required.")
+            t[name][column] = series
+    if (t["costs"][["budget_eur", "actual_eur"]] < 0).any().any() or (t["daily_performance"]["bets_eur"] < 0).any():
+        raise ValueError("Costs and bets must be non-negative. Daily GGR may be negative.")
+    p = t["daily_performance"]
+    cutoff = p["date"].max()
+    for row in games.itertuples():
+        dates = p.loc[p["game_id"] == row.game_id, "date"]
+        expected = pd.date_range(row.launch_date, cutoff, freq="D")
+        if pd.isna(row.launch_date) or len(expected) == 0 or set(dates) != set(expected):
+            raise ValueError(f"{row.game_id}: daily coverage must run from launch through the common data cutoff; missing/pre-launch dates are not zero.")
+        if row.game_id not in set(t["costs"]["game_id"]):
+            raise ValueError(f"{row.game_id}: costs are required.")
+        milestones = t["milestones"].loc[t["milestones"]["game_id"] == row.game_id]
+        if not {"kick_off", "activation"}.issubset(set(milestones["milestone"])):
+            raise ValueError(f"{row.game_id}: kick_off and activation milestones are required.")
+        if milestones[["planned_date", "actual_date"]].isna().any().any():
+            raise ValueError(f"{row.game_id}: milestone dates are required by this completed-project example.")
+
+
 def load(cfg: dict) -> dict[str, pd.DataFrame]:
     d = (HERE / cfg["data_dir"]).resolve()
     t = {name: pd.read_csv(d / f"{name}.csv") for name in ["games", "costs", "milestones", "daily_performance"]}
@@ -29,6 +76,7 @@ def load(cfg: dict) -> dict[str, pd.DataFrame]:
     t["daily_performance"]["date"] = pd.to_datetime(t["daily_performance"]["date"])
     for c in ["planned_date", "actual_date"]:
         t["milestones"][c] = pd.to_datetime(t["milestones"][c])
+    validate_tables(t)
     return t
 
 
@@ -72,6 +120,14 @@ def group_table(g: pd.DataFrame, by: str, col: str, min_n: int) -> pd.DataFrame:
     return out.sort_values("median", ascending=False)
 
 
+def pct(value) -> str:
+    return "not available" if value is None or pd.isna(value) else f"{value:.0%}"
+
+
+def rounded(value):
+    return None if pd.isna(value) else round(float(value), 3)
+
+
 def eur(x) -> str:
     if pd.isna(x):
         return "not yet"
@@ -90,6 +146,7 @@ def md_table(df: pd.DataFrame, money_cols: list[str]) -> str:
 
 
 def build(cfg: dict) -> tuple[str, dict]:
+    validate_config(cfg)
     t = load(cfg)
     g = per_game(t, cfg)
     W = cfg["main_window_days"]
@@ -110,8 +167,10 @@ def build(cfg: dict) -> tuple[str, dict]:
     cv_cost = g.groupby("type")["actual_eur"].agg(lambda s: s.std() / s.mean())
     cv_rev = g.dropna(subset=[col]).groupby("type")[col].agg(lambda s: s.std() / s.mean())
     top_share = g[col].dropna().sort_values(ascending=False)
+    if top_share.empty:
+        raise ValueError("No games have completed the main comparison window.")
     n_top = max(1, round(len(top_share) * 0.2))
-    top20 = top_share.head(n_top).sum() / top_share.sum()
+    top20 = top_share.head(n_top).sum() / top_share.sum() if top_share.sum() > 0 else None
 
     groups = {by: group_table(g, by, col, min_n) for by in ["family", "type", "exclusive", "vendor"]}
     slip_vendor = g.groupby("vendor")[["weeks_planned", "weeks_actual", "slip_weeks"]].median().round(1)
@@ -128,20 +187,20 @@ def build(cfg: dict) -> tuple[str, dict]:
         f"Data up to **{g.attrs['data_date']}**. {len(g)} games. Revenue share used: {share:.0%}. "
         f"Main comparison window: **{W} days after launch**.",
         "",
-        "> Generated by `analyze.py`. All figures in EUR. Data in this repo is fictional.",
+        f"> Generated by `analyze.py`. All figures in EUR. Input label: {cfg.get('data_label', 'unverified')}.",
         "",
         "## Key facts",
         "",
-        f"1. **Cost is predictable, revenue is not.** Cost varies by {cv_cost.get('reskin', float('nan')):.0%} between reskins; "
-        f"GGR at {W} days varies by {cv_rev.get('reskin', float('nan')):.0%}.",
-        f"2. **A few games make most of the money.** The top {n_top} games ({n_top/len(top_share):.0%}) make "
-        f"{top20:.0%} of GGR at {W} days.",
-        f"3. **{int((g['profit_to_date'] > 0).sum())} of {len(g)} games** have paid back their cost so far.",
+        f"1. **Observed reskin variation.** Cost varies by {pct(cv_cost.get('reskin', float('nan')))} between reskins; "
+        f"GGR at {W} days varies by {pct(cv_rev.get('reskin', float('nan')))}.",
+        f"2. **Observed GGR concentration.** The top {n_top} games ({n_top/len(top_share):.0%}) make "
+        f"{pct(top20)} of GGR at {W} days.",
+        f"3. **{int((g['profit_to_date'] > 0).sum())} of {len(g)} games** have cumulative GGR × configured share above recorded actual cost; this is not net profit.",
         f"4. **{len(young)} game{'s are' if len(young) != 1 else ' is'} younger than {W} days** and left out of the comparisons.",
         "",
         "## Why age matters",
         "",
-        f"Ranking on total GGR rewards old games. Ranking at {W} days is fair. Biggest changes:",
+        f"Ranking on total GGR rewards old games. Ranking at {W} days aligns time since launch, but does not control for distribution or other differences. Biggest changes:",
         "",
         md_table(top_moves.set_index("title")[["days_live", "rank_total", "rank_fair", "moved"]], []),
         "",
@@ -165,6 +224,7 @@ def build(cfg: dict) -> tuple[str, dict]:
         "",
         "## Limits of this review",
         "",
+        "- Break-even day is zero-based: 0 is launch day. Revenue share is an assumption; taxes, fees and other unrecorded costs are excluded.",
         "- Correlation only. A family doing well can be the theme, the math, the marketing or luck.",
         f"- Groups with fewer than {min_n} games are flagged and should not drive decisions.",
         "- Exclusive and seasonal games have a different curve. Compare them with their own kind.",
@@ -172,6 +232,7 @@ def build(cfg: dict) -> tuple[str, dict]:
     ]
 
     summary = {
+        "data_label": cfg.get("data_label", "unverified"),
         "data_date": g.attrs["data_date"],
         "revenue_share": share,
         "main_window_days": W,
@@ -180,9 +241,9 @@ def build(cfg: dict) -> tuple[str, dict]:
         "slip_by_vendor": json.loads(slip_vendor.reset_index().to_json(orient="records")),
         "slip_reasons": reasons.to_dict(),
         "facts": {
-            "cost_variation_reskin": round(float(cv_cost.get("reskin", float("nan"))), 3),
-            "revenue_variation_reskin": round(float(cv_rev.get("reskin", float("nan"))), 3),
-            "top_20pct_share_of_ggr": round(float(top20), 3),
+            "cost_variation_reskin": rounded(cv_cost.get("reskin", float("nan"))),
+            "revenue_variation_reskin": rounded(cv_rev.get("reskin", float("nan"))),
+            "top_20pct_share_of_ggr": rounded(top20) if top20 is not None else None,
             "games_paid_back": int((g["profit_to_date"] > 0).sum()),
             "games_too_young": young.index.tolist(),
         },
@@ -193,11 +254,20 @@ def build(cfg: dict) -> tuple[str, dict]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=str(HERE / "config.json"))
-    cfg = json.loads(Path(ap.parse_args().config).read_text())
+    ap.add_argument("--output-dir", type=Path, default=HERE)
+    ap.add_argument("--overwrite", action="store_true", help="Explicitly replace existing output files")
+    args = ap.parse_args()
+    cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    outputs = [args.output_dir / "report.md", args.output_dir / "summary.json"]
+    if not args.overwrite and any(p.exists() for p in outputs):
+        ap.error("Output already exists. Choose a new --output-dir or explicitly use --overwrite.")
     report, summary = build(cfg)
-    (HERE / "report.md").write_text(report, encoding="utf-8")
-    (HERE / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print(f"Wrote {HERE/'report.md'} and {HERE/'summary.json'}")
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    encoded = json.dumps(summary, indent=2, allow_nan=False)
+    outputs[0].write_text(report, encoding="utf-8")
+    outputs[1].write_text(encoded, encoding="utf-8")
+    print(f"Wrote {outputs[0]} and {outputs[1]}")
+
 
 
 if __name__ == "__main__":

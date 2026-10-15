@@ -22,3 +22,11 @@ Rename them to match your studio. Keep the order.
 ## Money
 
 All money in EUR. GGR is bets minus wins. Studio revenue is GGR multiplied by the studio's revenue share, which is set in `examples/portfolio_review/config.json`, not in the data.
+
+## Executable example requirements
+
+The current portfolio-review code requires **daily** rows, unique by game/date, from each launch
+through one common data cutoff. Weekly data is a possible future adapter, not accepted by this
+implementation. Missing dates are not zero-performance days. It also requires costs and completed
+kick_off/activation milestone dates per game. See the example README before supplying real data.
+The CSV loader applies targeted integrity checks; it is not a full JSON Schema validator.

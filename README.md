@@ -6,7 +6,7 @@ This is not an agent framework. There are many good ones already. This repo answ
 
 > What should an agent actually do in a slot studio, what data does it need, and where must a person decide?
 
-It gives you four things you can use with any framework:
+It gives you five things you can use with any framework:
 
 | Folder | What it is |
 |---|---|
@@ -21,19 +21,41 @@ It gives you four things you can use with any framework:
 - **Developers** who can build agents but do not know how a slot studio works.
 - **Producers and product people** in iGaming who want a clear map before they automate anything.
 
-## Quick start
+## Install and run: no model key required
 
-```bash
+Requires Git, Python **3.11 or 3.12**, and internet for dependency installation.
+Run commands from the repository root. There is no web server or application UI.
+
+Windows PowerShell (activation is unnecessary):
+
+```powershell
 git clone https://github.com/canmils/slot-pm-agents.git
 cd slot-pm-agents
 python -m venv .venv
-# Activate: .\.venv\Scripts\Activate.ps1 (Windows) or source .venv/bin/activate
-python -m pip install -r requirements.txt
-python scripts/generate_synthetic_data.py      # optional: data is already in data/synthetic/
-python examples/portfolio_review/analyze.py    # writes examples/portfolio_review/report.md
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe examples/portfolio_review/analyze.py --output-dir output/portfolio-review
 ```
 
-Then read [`examples/portfolio_review/README.md`](examples/portfolio_review/README.md) to see how an agent uses that report.
+macOS/Linux:
+
+```sh
+git clone https://github.com/canmils/slot-pm-agents.git
+cd slot-pm-agents
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python examples/portfolio_review/analyze.py --output-dir output/portfolio-review
+```
+
+Expected: `output/portfolio-review/report.md` and `summary.json`, based on 30 fictional games,
+with data cutoff 2026-09-30. One game is too young for the 90-day comparison and remains unknown,
+not zero. Open the Markdown file in a text editor or preview it. The date is the fixture's cutoff,
+not today's date. Existing outputs are refused unless you explicitly add `--overwrite`.
+Use a new output folder to keep a previous review.
+
+The bundled CSVs are ready to use. `scripts/generate_synthetic_data.py` is optional and overwrites
+those fictional CSVs; do not run it over custom data. Generated reports are not model output.
+
+Next: follow the [worked example and agent handoff](examples/portfolio_review/README.md).
 
 ## The main idea
 
@@ -44,7 +66,7 @@ In a slot studio this matters more than in most software products, because:
 1. **Game math is regulated.** RTP, volatility and max win must be simulated and signed off by a math engineer. An agent can draft, never approve.
 2. **Builds are certified.** Labs (for example BMM, GLI, DGE) test a frozen build. "Agents ship code into players' hands" does not happen here.
 3. **Revenue of a new game is very hard to predict.** A few games make most of the money. An agent can show comparable games and ranges. It should not give a single number.
-4. **Cost and timeline are usually predictable.** This is where agents save time with little risk.
+4. **Cost and timeline can be measured.** Validate assumptions and data before drawing conclusions; time savings are not established by this example.
 
 Read [`docs/limits.md`](docs/limits.md) before you build anything.
 
@@ -78,16 +100,57 @@ Please do not contribute real commercial data.
 
 MIT. See [`LICENSE`](LICENSE).
 
-## Requirements and expected first result
+## What runs, what does not
 
-Python 3.11/3.12 and Git. No API key is needed for the deterministic example. Use the direct virtual-environment interpreter if activation is unavailable. The example writes `examples/portfolio_review/report.md` and `summary.json`; inspect them against the bundled fictional CSVs before connecting an AI framework. Real data belongs outside tracked sample files.
+| Part | Implemented behavior |
+| --- | --- |
+| `analyze.py` | Reads four CSVs, validates supported data assumptions and computes a deterministic report |
+| `prepare_agent_input.py` | Creates local `messages` JSON using the report facts and prompt; sends nothing |
+| Agent cards | Domain instructions/contracts, not running autonomous agents |
+| Provider, orchestration and delivery | Not bundled: you choose and implement these separately |
+| Approval | A human reviews the evidence and decides; nothing is published or sent automatically |
 
-## Update, troubleshoot and contribute
+This is a domain library plus one executable analytical example, not a commercial portfolio
+platform. It does not establish revenue forecasts, certification readiness or measured time savings.
 
-Stop the app with Ctrl+C. Back up your own configuration, inputs and outputs first. Run `git status`; commit tracked edits on a branch before pulling. Then `git pull --ff-only` and reinstall dependencies with the same environment/package manager used above. Restart with the documented run command. Resolve divergent history instead of forcing away changes.
+## Your own data and configuration
 
-Missing command: install the prerequisite and reopen the terminal. Missing module: use the same interpreter/package manager for install and run. Missing file: check the repository root and sample setup. Port busy: stop the earlier server. Provider failure: check key, credit, model access and connectivity; repeated calls can incur another charge.
+Read [schema/README.md](schema/README.md) and the [example guide](examples/portfolio_review/README.md)
+before replacing fictional data. The example expects daily rows from each launch through one common
+cutoff, not weekly aggregates. It rejects missing/duplicate daily rows, pre-launch dates, unknown
+IDs and invalid required financial values instead of silently treating gaps as zero.
+This is targeted validation, not a complete JSON Schema validator or source audit.
 
-Report bugs or suggest changes at https://github.com/canmils/slot-pm-agents/issues. Include OS/runtime, commit, exact command, safe sample, sanitized error and expected/actual result. See [CONTRIBUTING.md](CONTRIBUTING.md) for fork → branch → test → pull request. Never share keys or private company data.
+`data_dir` resolves relative to `examples/portfolio_review/`, **not your config file**. An absolute
+path is also accepted. The output folder resolves from the command's current working directory.
+Keep custom configs, data and reports in ignored `data/private/` / `output/` or outside this checkout.
+Set `data_label` accurately; it is a user-supplied label, not an automated provenance guarantee.
 
-See [ONBOARDING_CHECKS.md](ONBOARDING_CHECKS.md) for checks actually run and limits.
+## Verify, update and troubleshoot
+
+Use the same virtual-environment interpreter used above in place of `python`:
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+Tests check the fictional result, an independent 90-day sum, exclusion of young games, missing/
+duplicate rows, unknown IDs, invalid windows, output protection and local agent-message preparation.
+[CI](https://github.com/canmils/slot-pm-agents/actions/workflows/onboarding.yml) runs on Ubuntu and Windows.
+See [ONBOARDING_CHECKS.md](ONBOARDING_CHECKS.md) for performed checks and limits.
+
+Back up custom data/configs and outputs. Inspect `git status`, preserve tracked edits on a branch,
+run `git pull --ff-only`, then repeat the original pip installation command. No server needs stopping.
+
+| Problem | Action |
+| --- | --- |
+| Python/Git not found | Install prerequisite and reopen terminal |
+| Missing pandas | Install with the same `.venv` interpreter that runs the script |
+| Output already exists | Choose a new `--output-dir`, or deliberately use `--overwrite` after backup |
+| Missing CSV/column | Check `data_dir`, filenames and schema; do not substitute zeros |
+| Coverage or duplicate error | Repair upstream daily data; weekly data is unsupported by this example |
+| Main window/config error | Include 30 and the main window in `windows_days`; use a share in (0, 1] |
+
+Report [bugs or suggestions](https://github.com/canmils/slot-pm-agents/issues) with OS/Python version,
+commit, command, fictional sample and expected/actual result. Do not upload private commercial data.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for fork → branch → checks → pull request.

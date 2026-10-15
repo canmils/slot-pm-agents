@@ -1,19 +1,26 @@
 # Contributing
 
-Read README.md first for the supported workflow, inputs, outputs, limitations and verification commands. Reproducible bugs, documentation corrections, accessibility fixes and fictional examples are welcome.
+Read README.md, docs/limits.md and the worked portfolio example first. Useful changes include
+corrected domain assumptions, clearer agent contracts, fictional fixtures and verified calculations.
 
-## Report or suggest
+1. Fork/clone your fork and add upstream:
+   `git remote add upstream https://github.com/canmils/slot-pm-agents.git`.
+2. Create a focused branch: `git switch -c improve-portfolio-review`.
+3. Install using the README's virtual-environment commands.
+4. Run `python -m unittest discover -s tests -v` with that interpreter.
+5. Run the analysis and message-preparation commands into a new ignored output directory.
+   Analytical changes need independently checked expected values, not only snapshot updates.
+6. If changing the fictional example intentionally, regenerate committed report.md/summary.json
+   using `analyze.py --overwrite` and review the numerical differences.
+7. Inspect `git diff` / `git status`, commit intended files, push your branch and open a PR to main.
+   Describe the problem, behavior, verification and limitations. Maintainers review before merging.
 
-Use https://github.com/canmils/slot-pm-agents/issues. Include the user problem, OS/runtime versions, commit (`git rev-parse HEAD`), exact command, sanitized error, expected and actual result, and the smallest public/fictional input. Feature requests should explain who benefits and how to verify the result. Never include keys, private company data or personal details.
+Report issues at https://github.com/canmils/slot-pm-agents/issues with OS/Python version, commit,
+exact command, fictional input and expected/actual output. Feature proposals should explain the
+user problem, required data and human approval point. Major new workflows need a scoped design.
 
-## Submit a change
-
-1. Fork this repository and clone your fork.
-2. Add upstream: `git remote add upstream https://github.com/canmils/slot-pm-agents.git`.
-3. Create a branch: `git switch -c improve-onboarding`.
-4. Follow README installation and first-use instructions; make one focused change and update examples/docs.
-5. Run the README verification commands. Record unavailable checks honestly; mocked calls do not establish live provider quality.
-6. Review `git diff` and `git status` for unintended files/secrets. Commit intended files, push your branch, and open a pull request to the default branch.
-7. Explain the problem, resulting behavior, validation and remaining limitations.
-
-Keep private inputs and outputs outside tracked examples. Preserve upstream attribution and licenses. A repository without a license does not grant a general reuse license. Use fictional or explicitly licensed fixtures. Maintainers review before merging.
+Do not contribute real company financials, player data, API keys or private commercial material.
+Keep actual business data/configs/outputs in ignored directories or outside the checkout. Preserve
+MIT attribution and upstream rights. Distinguish generated synthetic patterns from real evidence.
+No model-generated revenue forecast, mathematical approval or certification sign-off should be
+presented as validated. An agent card is a contract/guide, not an implemented autonomous agent.

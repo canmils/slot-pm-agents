@@ -1,7 +1,12 @@
 {
   "data_dir": "../../data/synthetic",
-  "revenue_share": 0.10,
-  "windows_days": [30, 90, 180],
+  "revenue_share": 0.1,
+  "windows_days": [
+    30,
+    90,
+    180
+  ],
   "main_window_days": 90,
-  "min_group_size": 3
+  "min_group_size": 3,
+  "data_label": "fictional"
 }
