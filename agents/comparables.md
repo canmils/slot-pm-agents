@@ -1,7 +1,7 @@
 ---
 name: comparables
 layer: 3
-status: draft
+status: example available
 ---
 
 # Comparables
@@ -27,3 +27,5 @@ status: draft
 ## Quality checks
 - At least 3 comparables, or a clear warning.
 - Uses the same normalisation as `examples/portfolio_review`.
+
+See [`examples/comparables`](../examples/comparables/).

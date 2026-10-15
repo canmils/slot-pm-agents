@@ -1,0 +1,55 @@
+{
+  "option": {
+    "name": "New high-volatility Hold and Win (fictional)",
+    "criteria": {
+      "mechanic": "hold_and_win",
+      "volatility": "high",
+      "exclusive": false
+    }
+  },
+  "dropped_criteria": [],
+  "comparables": [
+    "G003",
+    "G021",
+    "G030"
+  ],
+  "ranges": [
+    {
+      "window_days": 30,
+      "games": 3,
+      "low": 44152.82,
+      "median": 218948.78,
+      "high": 353685.45
+    },
+    {
+      "window_days": 90,
+      "games": 2,
+      "low": 909090.54,
+      "median": 1143947.31,
+      "high": 1378804.08
+    },
+    {
+      "window_days": 180,
+      "games": 2,
+      "low": 1844234.11,
+      "median": 2082263.395,
+      "high": 2320292.68
+    },
+    {
+      "measure": "cost_eur",
+      "games": 3,
+      "low": 67220.0,
+      "median": 208680.0,
+      "high": 238950.0
+    },
+    {
+      "measure": "weeks_actual",
+      "games": 3,
+      "low": 20.8571428571,
+      "median": 35.4285714286,
+      "high": 36.2857142857
+    }
+  ],
+  "data_date": "2026-09-30",
+  "data_label": "fictional"
+}
