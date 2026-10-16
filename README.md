@@ -25,7 +25,7 @@ These are assistant-executed reviews, not autonomous agents. Existing Python exa
 | The agent's written review of that report | Performance review | Claude Opus 5.5, unedited | [agent_output.md](examples/portfolio_review/agent_output.md) |
 | Range of past results for a new game idea, with its own warnings | Comparables | Code | [comparables.md](examples/comparables/comparables.md) |
 
-The agent draft passes a code check: every number in it exists in the data. You can run the same check on any draft.
+The agent draft passes a numeric presence check. This can catch invented numbers, but cannot verify that a number is assigned to the correct game or supports the conclusion. You can run the same check on any draft.
 
 ## What is in the repo
 

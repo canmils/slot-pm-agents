@@ -33,3 +33,7 @@ Three shared Markdown workflows with AGENTS.md / CLAUDE.md project entry points.
 
 Automated checks cover deterministic matching and existing report/agent utilities, not language-model reasoning quality. Fictional review fixtures include expected findings, forbidden outputs, a clean control and document-instruction injection. Native Codex/Claude Code sessions and repeated baseline/candidate comparisons have not been executed. Do not claim improved accuracy, time savings, regulatory coverage or production readiness from this change.
 
+
+## Follow-up adversarial check
+
+Found a false positive: 90% was accepted when a field name contained 90 (such as ggr_90d), even without a corresponding share. Removed percentage acceptance from field-name numbers and added a regression case. CLI success now describes numeric presence rather than claiming full traceability. Added an end-to-end strict CLI test. No model or client benchmark was performed.

@@ -66,7 +66,7 @@ def main(argv=None, model_call=call_openai) -> int:
             print("  " + p)
         print("Fix or remove them before anyone reads the draft.")
         return 2
-    print("All numbers in the draft trace to summary.json. A person still needs to review the wording.")
+    print("Numeric presence check passed. A person must still review attribution and reasoning.")
     return 0
 
 
