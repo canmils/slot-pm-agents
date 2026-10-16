@@ -42,3 +42,13 @@ buyer demand has been validated. Integrity checks are targeted and the example e
 daily observations/completed projects. Age alignment does not control exposure, distribution,
 seasonality or causality. Revenue share is an assumption, and calculated cost recovery is not net
 profit. Fictional source patterns do not establish an industry-wide business conclusion.
+
+## Workflow update verification (2026-10-16)
+
+- Linux: 21 offline unittest cases passed, including strict exclusivity preservation and empty cohorts.
+- Portfolio analysis, agent-input preparation and strict comparables CLI ran successfully.
+- Existing committed comparables report remains unchanged under legacy defaults.
+- Three fictional cases have an author walkthrough in examples/workflow_reviews/reference-review.md.
+- Native Codex/Claude Code execution and blinded baseline comparisons remain unverified. Markdown workflow correctness is not established by Python tests.
+
+Follow-up: 23 local tests passed, including rejection of an unsupported 90% from a ggr_90d field name and strict CLI cohort preservation. Initial PR checks passed on both Ubuntu and Windows before this follow-up; the new commit requires fresh CI. Neither native assistant CLI is installed in the execution environment.

@@ -41,14 +41,14 @@ def validate_option(option: dict) -> list[tuple[str, object]]:
     return list(criteria.items())
 
 
-def find(games: list[dict], criteria: list[tuple[str, object]]) -> tuple[list[dict], list[str]]:
+def find(games: list[dict], criteria: list[tuple[str, object]], strict: bool = False) -> tuple[list[dict], list[str]]:
     """Match on all criteria. If fewer than MIN_COMPARABLES match, drop the least
     important criterion (the last one) and try again. Return matches and dropped criteria."""
     dropped: list[str] = []
     active = list(criteria)
     while active:
         matches = [g for g in games if all(g.get(k) == v for k, v in active)]
-        if len(matches) >= MIN_COMPARABLES or len(active) == 1:
+        if strict or len(matches) >= MIN_COMPARABLES or len(active) == 1:
             return matches, dropped
         key, _ = active.pop()
         dropped.append(key)
@@ -129,11 +129,11 @@ def report(option: dict, criteria, matches, dropped, rng, summary) -> str:
     return "\n".join(lines) + "\n"
 
 
-def run(option_path: Path, config_path: Path) -> tuple[str, dict]:
+def run(option_path: Path, config_path: Path, strict: bool = False) -> tuple[str, dict]:
     option = json.loads(option_path.read_text(encoding="utf-8"))
     criteria = validate_option(option)
     games, summary = load_games(config_path)
-    matches, dropped = find(games, criteria)
+    matches, dropped = find(games, criteria, strict=strict)
     rng = ranges(matches)
     result = {"option": option, "dropped_criteria": dropped,
               "comparables": [g["game_id"] for g in matches], "ranges": rng,
@@ -147,12 +147,13 @@ def main(argv=None) -> int:
     ap.add_argument("--config", type=Path, default=PORTFOLIO / "config.json")
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--overwrite", action="store_true")
+    ap.add_argument("--strict", action="store_true", help="Keep all cohort criteria, even with fewer than three matches.")
     args = ap.parse_args(argv)
     outputs = [args.output_dir / "comparables.md", args.output_dir / "comparables.json"]
     if not args.overwrite and any(p.exists() for p in outputs):
         ap.error("Output already exists. Choose a new --output-dir or use --overwrite.")
     try:
-        md, result = run(args.option, args.config)
+        md, result = run(args.option, args.config, strict=args.strict)
     except ValueError as exc:
         print(f"Error: {exc}")
         return 1

@@ -35,6 +35,9 @@ def summary_values(summary) -> tuple[list[float], set[int], list[float]]:
         if isinstance(node, dict):
             for k, value in node.items():
                 key_numbers.update(int(n) for n in re.findall(r"\d+", str(k)))
+                # Explicit percentage labels (top_20pct) encode a percentage;
+                # day windows (ggr_90d) do not.
+                shares.extend(float(n) / 100 for n in re.findall(r"(\d+(?:\.\d+)?)pct(?:_|$)", str(k)))
                 walk(value, str(k))
         elif isinstance(node, list):
             for item in node:
@@ -64,8 +67,6 @@ def _matches(token: float, decimals: int, suffix: str, values: list[float], key_
             return True
     if suffix == "%":
         if any(abs(v * 100 - token) <= tol for v in shares):
-            return True
-        if decimals == 0 and int(token) in key_numbers:
             return True
     return False
 
@@ -103,7 +104,7 @@ def main(argv=None) -> int:
             print("  " + p)
         print("Check these by hand before anyone reads the draft.")
         return 1
-    print(f"All numbers in {args.draft.name} trace to {args.summary.name}.")
+    print(f"Numeric presence check passed for {args.draft.name}. Attribution and reasoning still need human review.")
     return 0
 
 

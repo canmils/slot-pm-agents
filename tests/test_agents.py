@@ -35,6 +35,12 @@ class TraceabilityTest(unittest.TestCase):
         problems = check.untraceable_numbers("Ember Fang median is 950k and share is 71%.", SUMMARY)
         self.assertEqual(len(problems), 2)
 
+    def test_window_number_does_not_authorize_percentage(self):
+        summary = {"ggr_90d": 1000, "share": 0.57}
+        self.assertEqual(check.untraceable_numbers("Share 90%.", summary), ["line 1: 90%"])
+        self.assertEqual(check.untraceable_numbers("Share 57%.", summary), [])
+        self.assertEqual(check.untraceable_numbers("Top 20%.", {"top_20pct": {"share": 0.57}}), [])
+
     def test_formats_and_ignored_parts(self):
         text = ("> Written on 15 October 2026 by a model 5.5\n"
                 "1. Data up to 2026-09-30, G030 is young.\n"
@@ -102,6 +108,30 @@ class ComparablesTest(unittest.TestCase):
         self.assertEqual(dropped[0], "type")
         self.assertGreaterEqual(len(matches), 3)
         self.assertTrue(all(g["mechanic"] == "cluster" for g in matches))
+
+    def test_strict_cohort_does_not_relax_exclusivity(self):
+        games = [{"mechanic": "cluster", "exclusive": False}] + [
+            {"mechanic": "cluster", "exclusive": True} for _ in range(3)]
+        criteria = [("mechanic", "cluster"), ("exclusive", False)]
+        matches, dropped = comparables.find(games, criteria, strict=True)
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(dropped, [])
+        relaxed, dropped = comparables.find(games, criteria)
+        self.assertEqual(len(relaxed), 4)
+        self.assertEqual(dropped, ["exclusive"])
+
+    def test_strict_cli_preserves_all_supplied_criteria(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(comparables.main(["--strict", "--output-dir", tmp]), 0)
+            result = json.loads((Path(tmp) / "comparables.json").read_text())
+            self.assertEqual(result["dropped_criteria"], [])
+            selected = [g for g in self.games if g["game_id"] in result["comparables"]]
+            self.assertTrue(all(g["mechanic"] == "hold_and_win" and
+                                g["volatility"] == "high" and g["exclusive"] is False for g in selected))
+
+    def test_strict_no_matches_stays_empty(self):
+        matches, dropped = comparables.find([{"seasonal": True}], [("seasonal", False)], strict=True)
+        self.assertEqual((matches, dropped), ([], []))
 
     def test_young_games_never_counted_as_zero(self):
         young = [g for g in self.games if g["ggr_90d"] is None]

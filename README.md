@@ -1,10 +1,21 @@
 # Slot PM Agents
 
-A domain library for people who want to build AI agents for **product management in a slot game studio**.
+Practical review workflows and a domain library for **product management in a slot game studio**.
 
 This is not an agent framework. There are many good ones already. This repo answers a different question:
 
 > What should an agent actually do in a slot studio, what data does it need, and where must a person decide?
+
+## Use as a studio assistant
+
+Open this checkout in Codex or Claude Code. The same evidence contract supports three guided reviews:
+
+- [Brief and signposting](workflows/brief-review.md): contradictions, missing rules and acceptance criteria.
+- [Release evidence](workflows/release-review.md): exact builds, markets, QA and certification dependencies.
+- [Portfolio decision](workflows/portfolio-decision.md): costs, capacity and qualified historical comparisons.
+
+[Setup and example prompts](docs/assistant-setup.md) · [Fictional evaluation cases](examples/workflow_reviews/README.md) · [Upstream audit](docs/upstream-audit.md).
+These are assistant-executed reviews, not autonomous agents. Existing Python examples run independently. Native client/model quality has not yet been benchmarked.
 
 ## See it before you install anything
 
@@ -14,7 +25,7 @@ This is not an agent framework. There are many good ones already. This repo answ
 | The agent's written review of that report | Performance review | Claude Opus 5.5, unedited | [agent_output.md](examples/portfolio_review/agent_output.md) |
 | Range of past results for a new game idea, with its own warnings | Comparables | Code | [comparables.md](examples/comparables/comparables.md) |
 
-The agent draft passes a code check: every number in it exists in the data. You can run the same check on any draft.
+The agent draft passes a numeric presence check. This can catch invented numbers, but cannot verify that a number is assigned to the correct game or supports the conclusion. You can run the same check on any draft.
 
 ## What is in the repo
 
