@@ -5,7 +5,7 @@ Read this before you build. These limits come from how slot games are made, regu
 ## Never
 
 1. **Approve game math.** RTP, volatility, max win and feature frequency must be simulated and signed off by a math engineer.
-2. **Change a certified build.** Labs test a frozen build. Any change means new certification.
+2. **Change a certified build.** Labs test a defined build and scope. Technical Compliance must assess changes against the applicable jurisdiction and process before release; do not assume either automatic acceptance or universal full recertification.
 3. **Deploy to production.** Releases go through system testing, stage testing and operator activation, with people signing off.
 4. **Give one revenue number for a new game.** Show comparables and a range.
 5. **Store or send real player data** outside approved systems.

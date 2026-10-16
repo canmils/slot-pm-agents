@@ -103,6 +103,21 @@ class ComparablesTest(unittest.TestCase):
         self.assertGreaterEqual(len(matches), 3)
         self.assertTrue(all(g["mechanic"] == "cluster" for g in matches))
 
+    def test_strict_cohort_does_not_relax_exclusivity(self):
+        games = [{"mechanic": "cluster", "exclusive": False}] + [
+            {"mechanic": "cluster", "exclusive": True} for _ in range(3)]
+        criteria = [("mechanic", "cluster"), ("exclusive", False)]
+        matches, dropped = comparables.find(games, criteria, strict=True)
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(dropped, [])
+        relaxed, dropped = comparables.find(games, criteria)
+        self.assertEqual(len(relaxed), 4)
+        self.assertEqual(dropped, ["exclusive"])
+
+    def test_strict_no_matches_stays_empty(self):
+        matches, dropped = comparables.find([{"seasonal": True}], [("seasonal", False)], strict=True)
+        self.assertEqual((matches, dropped), ([], []))
+
     def test_young_games_never_counted_as_zero(self):
         young = [g for g in self.games if g["ggr_90d"] is None]
         self.assertTrue(young)

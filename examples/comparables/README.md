@@ -39,3 +39,7 @@ The bundled example shows the last two warnings on purpose: 3 games match, only 
 ## Limits
 
 Matching on a few attributes is crude. It does not control for theme quality, distribution, operators, season or marketing. The data is fictional. The Product Lead decides; this report does not recommend.
+
+### Keep a cohort fixed
+
+Add `--strict` to keep every criterion in option.json, even if fewer than three games match. The default retains the original relaxation behavior; inspect dropped criteria before interpreting its ranges. Strict matching does not adjust for missing operator/market exposure.
