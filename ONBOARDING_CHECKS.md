@@ -42,3 +42,12 @@ buyer demand has been validated. Integrity checks are targeted and the example e
 daily observations/completed projects. Age alignment does not control exposure, distribution,
 seasonality or causality. Revenue share is an assumption, and calculated cost recovery is not net
 profit. Fictional source patterns do not establish an industry-wide business conclusion.
+
+## Release readiness companion — 22 October 2026
+
+- Added an offline, standard-library checker with explicit review dates, required-check coverage, transitive dependencies, candidate-build evidence matching and source-linked findings.
+- Fictional report independently expected to contain four findings: missing activation record, overdue cert review, old-build QA evidence and unresolved QA dependency.
+- Local Python 3.12: all 30 unit tests passed, including 11 new readiness tests. Cases cover clean records, incomplete/unsupported evidence, deadlines, dependency cycles, unknown/duplicate IDs, malformed input, output preservation and CLI exit codes.
+- Committed Markdown/JSON report reproduced exactly by the tests. No provider calls or commercial records used.
+- Windows execution is covered by the GitHub Actions matrix; inspect the current PR run before claiming that platform passed.
+- No real studio workflow, evidence-reference retrieval, regulatory validation or time-saving study was performed.

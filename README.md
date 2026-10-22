@@ -6,6 +6,18 @@ This is not an agent framework. There are many good ones already. This repo answ
 
 > What should an agent actually do in a slot studio, what data does it need, and where must a person decide?
 
+## Try the release readiness checker
+
+**[See a fictional blocker report](examples/release_readiness/report.md)** · [Input and walkthrough](examples/release_readiness/README.md)
+
+Identify missing required checks, overdue work, unresolved dependencies and evidence for a different candidate build. Runs offline with Python; no API key or model needed. The included example produces four source-linked blockers for a human release review.
+
+```sh
+python examples/release_readiness/check.py --as-of 2026-10-22
+```
+
+A clean report is not release approval. The tool checks supplied records, not evidence authenticity, regulatory requirements or policy completeness.
+
 ## See it before you install anything
 
 | What | Agent | Made by | Open |
@@ -34,7 +46,7 @@ All figures above describe synthetic data, not studio results.
 | Folder | What it is |
 |---|---|
 | [`docs/framework.md`](docs/framework.md) | The 7 layers of product management, adapted to slot games |
-| [`agents/`](agents/) | One card per agent: inputs, outputs, human decision point, limits. 2 of 10 have a runnable example |
+| [`agents/`](agents/) | One card per agent: inputs, outputs, human decision point, limits. 2 of 10 have a runnable example; the release planner also links to a deterministic readiness companion |
 | [`schema/`](schema/) | A data model for slot projects: games, milestones, costs, daily performance |
 | [`data/synthetic/`](data/synthetic/) | Fictional data that follows the schema |
 | [`examples/`](examples/) | [Portfolio review](examples/portfolio_review/) and [Comparables](examples/comparables/), end to end |
@@ -107,7 +119,7 @@ Leave Define, Build and Run until the first three are trusted.
 | Agent cards | Domain contracts, not running agents |
 | Approval | Always a person. Nothing is published, sent or scheduled |
 
-It does not forecast revenue, certify anything or prove time savings.
+The [release readiness checker](examples/release_readiness/README.md) is an additional deterministic workflow, not an autonomous agent. It does not forecast revenue, certify anything or prove time savings.
 
 ## Tests
 
