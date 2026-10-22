@@ -12,7 +12,7 @@ FOLDER = ROOT / 'examples/release_readiness'
 spec = importlib.util.spec_from_file_location('readiness', FOLDER / 'check.py')
 checker = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(checker)
-FIXTURE = json.loads((FOLDER / 'fictional-release.json').read_text())
+FIXTURE = json.loads((FOLDER / 'fictional-release.json').read_text(encoding='utf-8'))
 
 
 class ReadinessTest(unittest.TestCase):
@@ -115,13 +115,13 @@ class ReadinessTest(unittest.TestCase):
             self.assertEqual((out/'report.json').read_bytes(), original)
             self.assertEqual(subprocess.run(cmd + ['--fail-on-blockers'], capture_output=True).returncode, 1)
             bad = Path(tmp)/'bad.json'
-            bad.write_text('{broken')
+            bad.write_text('{broken', encoding='utf-8')
             self.assertEqual(subprocess.run(cmd + ['--input',str(bad)], capture_output=True).returncode, 2)
 
     def test_committed_report_reproducible(self):
         expected = self.review(FIXTURE)
-        self.assertEqual(json.loads((FOLDER/'report.json').read_text()), expected)
-        self.assertEqual((FOLDER/'report.md').read_text(), checker.markdown(expected))
+        self.assertEqual(json.loads((FOLDER/'report.json').read_text(encoding='utf-8')), expected)
+        self.assertEqual((FOLDER/'report.md').read_text(encoding='utf-8'), checker.markdown(expected))
 
 
 if __name__ == '__main__':

@@ -51,3 +51,5 @@ profit. Fictional source patterns do not establish an industry-wide business con
 - Committed Markdown/JSON report reproduced exactly by the tests. No provider calls or commercial records used.
 - Windows execution is covered by the GitHub Actions matrix; inspect the current PR run before claiming that platform passed.
 - No real studio workflow, evidence-reference retrieval, regulatory validation or time-saving study was performed.
+
+- Initial Windows CI caught locale-dependent decoding in the new report fixture test. Test inputs now explicitly use UTF-8, matching the checker output.
