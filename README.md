@@ -16,6 +16,19 @@ This is not an agent framework. There are many good ones already. This repo answ
 
 The agent draft passes a code check: every number in it exists in the data. You can run the same check on any draft.
 
+## One concrete workflow
+
+**Question:** does ranking games by lifetime revenue hide promising recent releases?
+
+1. **Input:** the included fictional 30-game portfolio, launch dates, recorded costs and daily performance.
+2. **Code output:** a report comparing games at 90 days after launch. In this fixture, Neon Bazaar Frenzy moves from lifetime rank 19 to age-aligned rank 6.
+3. **Optional agent output:** a written interpretation checked for numbers absent from the source data.
+4. **Human decision:** investigate distribution, costs and other differences before changing investment priorities. Matching numbers alone does not validate an interpretation.
+
+[Inspect the report](examples/portfolio_review/report.md) · [Follow the runnable walkthrough](examples/portfolio_review/README.md) · [Challenge an assumption](https://github.com/canmils/slot-pm-agents/issues/new)
+
+All figures above describe synthetic data, not studio results.
+
 ## What is in the repo
 
 | Folder | What it is |
