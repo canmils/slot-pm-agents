@@ -27,3 +27,7 @@ status: draft
 ## Quality checks
 - Dates match the template order.
 - Slip buffer is shown and explained.
+
+## Runnable readiness companion
+
+[Release readiness checker](../examples/release_readiness/README.md): inspect required-check coverage, dates, dependencies and candidate-build evidence before a human review. This deterministic companion does not implement calendar scenarios, staffing/capacity checks or autonomous release planning. [Fictional output](../examples/release_readiness/report.md).

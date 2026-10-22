@@ -1,0 +1,45 @@
+{
+  "project": "Moon Orchard Demo",
+  "build": "demo-1.2.0",
+  "as_of": "2026-10-22",
+  "release_date": "2026-10-29",
+  "policy_source": "Fictional studio checklist v1; illustrative, not jurisdiction requirements",
+  "status": "BLOCKED",
+  "blockers": 4,
+  "warnings": 0,
+  "findings": [
+    {
+      "check_id": "activation",
+      "code": "missing_check",
+      "severity": "blocker",
+      "owner": "Unassigned",
+      "source": "required_check_ids",
+      "detail": "Required check has no record. Supply its status and evidence."
+    },
+    {
+      "check_id": "cert",
+      "code": "overdue",
+      "severity": "blocker",
+      "owner": "Morgan",
+      "source": "checks[cert]",
+      "detail": "Incomplete; due 2026-10-21. Overdue."
+    },
+    {
+      "check_id": "qa",
+      "code": "build_mismatch",
+      "severity": "blocker",
+      "owner": "Jamie",
+      "source": "checks[qa]",
+      "detail": "Evidence must identify candidate build demo-1.2.0."
+    },
+    {
+      "check_id": "cert",
+      "code": "dependency_unresolved",
+      "severity": "blocker",
+      "owner": "Morgan",
+      "source": "checks[cert]",
+      "detail": "Dependency qa has incomplete or unsupported evidence."
+    }
+  ],
+  "limitation": "Human release decision required. Evidence references are not opened or verified; policy completeness, authenticity and regulatory compliance are not assessed."
+}

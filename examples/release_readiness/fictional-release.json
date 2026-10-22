@@ -1,0 +1,12 @@
+{
+  "project": "Moon Orchard Demo",
+  "build": "demo-1.2.0",
+  "release_date": "2026-10-29",
+  "policy_source": "Fictional studio checklist v1; illustrative, not jurisdiction requirements",
+  "required_check_ids": ["math", "qa", "cert", "activation"],
+  "checks": [
+    {"id":"math", "name":"Math review", "owner":"Alex", "status":"complete", "due_date":"2026-10-19", "completed_on":"2026-10-19", "evidence":"fictional://math/review-12", "reviewer":"Sam", "evidence_build":"demo-1.2.0", "depends_on":[]},
+    {"id":"qa", "name":"Candidate QA review", "owner":"Jamie", "status":"complete", "due_date":"2026-10-21", "completed_on":"2026-10-21", "evidence":"fictional://qa/run-18", "reviewer":"Taylor", "evidence_build":"demo-1.1.0", "depends_on":["math"]},
+    {"id":"cert", "name":"Certification evidence review", "owner":"Morgan", "status":"pending", "due_date":"2026-10-21", "depends_on":["qa"]}
+  ]
+}

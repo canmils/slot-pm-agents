@@ -19,3 +19,4 @@ jobs:
       - run: python examples/portfolio_review/prepare_agent_input.py --summary output/portfolio-review/summary.json --output output/portfolio-review/agent-input.json
       - run: python examples/comparables/find_comparables.py --output-dir output/comparables
       - run: python examples/portfolio_review/check_agent_output.py --summary examples/portfolio_review/summary.json --draft examples/portfolio_review/agent_output.md
+      - run: python examples/release_readiness/check.py --as-of 2026-10-22 --output-dir output/release-readiness
