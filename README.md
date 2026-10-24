@@ -20,6 +20,12 @@ A clean report is not release approval. The tool checks supplied records, not ev
 
 ## See it before you install anything
 
+![An agent's portfolio review draft next to the code check that catches an invented number](docs/agent-draft-and-check.png)
+
+*Left: the committed agent draft. Right: the real output of `check_agent_output.py`, first on that draft, then on a copy with one number changed from 909k to 950k.*
+
+![Comparables report: range of past results for a new game idea, with its own warnings](docs/comparables.png)
+
 | What | Agent | Made by | Open |
 | --- | --- | --- | --- |
 | Portfolio report: 30 fictional games compared at the same age | Performance review | Code | [report.md](examples/portfolio_review/report.md) |
